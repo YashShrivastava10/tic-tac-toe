@@ -14,6 +14,8 @@ export const TicTacToe = () => {
   const [p2, setP2] = useState<Player>({ name: "", icon: "", clicked: false, winner: false })
   const [board, setBoard] = useState<BoardType>([])
   const [visibleBoard, setVisibleBoard] = useState<BoardType>([])
+  const [winningLine, setWinningLine] = useState<{ start: [number, number]; end: [number, number] } | null>(null);
+
 
   const selectBtn = (p: HTMLButtonElement) => {
     p.style.border = "2px solid #f22853"
@@ -75,9 +77,12 @@ export const TicTacToe = () => {
       updatedVisibleBoard[row][col] = p2.icon
     }
 
+    let draw = true
+
     const declareWinner = (value: string | null) => {
       p1.icon === value && setP1(prevState => ({ ...prevState, winner: true }))
       p2.icon === value && setP2(prevState => ({ ...prevState, winner: true }))
+      draw = false
     }
 
     for(let i = 0; i < 3; i++){
@@ -94,8 +99,8 @@ export const TicTacToe = () => {
     setVisibleBoard(updatedVisibleBoard)
 
     const status: boolean = updatedVisibleBoard.flat().every(status => status)
-    if(status){
-
+    if(status && draw){
+      setTimeout(() => handleReset(), 2000)
     }
   }
 

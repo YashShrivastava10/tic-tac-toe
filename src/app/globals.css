@@ -53,3 +53,6 @@ form label{
 .number:not(:last-child){
   border-right: 5px dashed rgba(0, 0, 255, 0.489);
 }
+.winning-cell {
+  background-color: yellow;
+}
