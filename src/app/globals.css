@@ -2,26 +2,48 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+.main{
+  @apply h-screen w-screen flex flex-col justify-start items-center gap-4 p-4 bg-pink
 }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+.heading{
+  @apply text-black font-bold text-4xl h-[8%] flex justify-center items-center
 }
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+.content{
+  @apply h-[90%] w-full flex flex-col justify-start items-center gap-4
+}
+form{
+  @apply h-full w-full flex flex-col gap-4 justify-start
+}
+.select-container{
+  @apply flex flex-col gap-2 border border-orange rounded p-2
+}
+form input{
+  @apply rounded-md px-2 outline-none h-[35px]
+}
+.icon-container{
+  @apply flex justify-between items-center h-[60px] w-full gap-2
+}
+.icon{
+  @apply bg-red w-1/2 rounded h-[35px] text-2xl font-bold text-orange cursor-pointer
+}
+.primary{
+  @apply bg-red text-white rounded-lg px-4 py-2 w-full
+}
+.primary:disabled{
+  @apply bg-gray
+}
+.player-info{
+ @apply  flex flex-col justify-center items-center w-[45%] border border-orange rounded-xl bg-white h-3/4 font-bold px-2
+}
+.player-info span{
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 100%;
+}
+.row:not(:last-child){
+  border-bottom: 5px dashed rgba(0, 0, 255, 0.489);
+}
+.number:not(:last-child){
+  border-right: 5px dashed rgba(0, 0, 255, 0.489);
 }
