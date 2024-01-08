@@ -4,17 +4,16 @@ import React, { useState } from 'react'
 
 type BoardType = Array<Array<string | null>>
 type Icon = "X" | "O" | ""
-type Player = { name: string, icon: Icon }
+type Player = { name: string, icon: Icon, clicked: boolean, winner: boolean }
 
-const initialBoard = (rows: number, cols: number): BoardType => Array.from({ length: rows }, () => Array(cols).fill(null))
+const initialBoard = (rows: number, cols: number, value: null | Icon): BoardType => Array.from({ length: rows }, () => Array(cols).fill(value))
 
 export const TicTacToe = () => {
-  const [board, setBoard] = useState<BoardType>(initialBoard(3, 3))
-  const [show, setShow] = useState<string | null>("play")
-  const [p1, setP1] = useState<Player>({ name: "Yash", icon: "X" })
-  const [p2, setP2] = useState<Player>({ name: "Rajdeep", icon: "O" })
-
-  const showNumber = (val: number) => console.log(val);
+  const [show, setShow] = useState<string | null>("playerName")
+  const [p1, setP1] = useState<Player>({ name: "", icon: "", clicked: false, winner: false })
+  const [p2, setP2] = useState<Player>({ name: "", icon: "", clicked: false, winner: false })
+  const [board, setBoard] = useState<BoardType>([])
+  const [visibleBoard, setVisibleBoard] = useState<BoardType>([])
 
   const selectBtn = (p: HTMLButtonElement) => {
     p.style.border = "2px solid #f22853"
@@ -56,10 +55,62 @@ export const TicTacToe = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    setBoard(initialBoard(3, 3, null))
+    setVisibleBoard(initialBoard(3, 3, ""))
     setShow("play")
   }
 
   const isDisabled = (p: Player) => p.name.trim() === "" || p.icon === ""
+
+  const showNumber = (row: number, col: number) => {
+    let updatedVisibleBoard: BoardType = [...visibleBoard]
+    if(!p1.clicked){
+      setP1(prevState => ({...prevState, clicked: true}))
+      setP2(prevState => ({...prevState, clicked: false}))
+      updatedVisibleBoard[row][col] = p1.icon
+    }
+    else{
+      setP1(prevState => ({...prevState, clicked: false}))
+      setP2(prevState => ({...prevState, clicked: true}))
+      updatedVisibleBoard[row][col] = p2.icon
+    }
+
+    const declareWinner = (value: string | null) => {
+      p1.icon === value && setP1(prevState => ({ ...prevState, winner: true }))
+      p2.icon === value && setP2(prevState => ({ ...prevState, winner: true }))
+    }
+
+    for(let i = 0; i < 3; i++){
+      const rowMatch = updatedVisibleBoard[i][0] === updatedVisibleBoard[i][1] && updatedVisibleBoard[i][1] === updatedVisibleBoard[i][2]
+      const colMatch = updatedVisibleBoard[0][i] === updatedVisibleBoard[1][i] && updatedVisibleBoard[1][i] === updatedVisibleBoard[2][i]
+      if (rowMatch || colMatch) declareWinner(updatedVisibleBoard[rowMatch ? i : 0][colMatch ? i : 0])
+    }
+
+    const di1 = updatedVisibleBoard[0][0] === updatedVisibleBoard[1][1] && updatedVisibleBoard[1][1] === updatedVisibleBoard[2][2]
+    const di2 = updatedVisibleBoard[0][2] === updatedVisibleBoard[1][1] && updatedVisibleBoard[1][1] === updatedVisibleBoard[2][0]
+
+    if (di1 || di2) declareWinner(updatedVisibleBoard[1][1])
+    
+    setVisibleBoard(updatedVisibleBoard)
+
+    const status: boolean = updatedVisibleBoard.flat().every(status => status)
+    if(status){
+
+    }
+  }
+
+  const handleBack = () => {
+    setShow("playerName")
+    setP1({name: "", icon: "", clicked: false, winner: false})
+    setP2({name: "", icon: "", clicked: false, winner: false})
+  }
+
+  const handleReset = () => {
+    setP1(prevState => ({...prevState, clicked: false, winner: false}))
+    setP2(prevState => ({...prevState, clicked: false, winner: false}))
+    setBoard(initialBoard(3, 3, null))
+    setVisibleBoard(initialBoard(3, 3, ""))
+  }
 
   if (show === "playerName") {
     return (
@@ -72,8 +123,8 @@ export const TicTacToe = () => {
                 <label htmlFor='p1'>Enter P1 name</label>
                 <input value={p1.name} id="p1" onChange={(e) => handlePlayerInfoChange(setP1, "name", e.target.value, e.target.id)} required />
               </div>
-              <div className='flex flex-col justify-start items-center h-fit w-full gap-2'>
-                <span>Choose One:</span>
+              <div className='flex flex-col justify-start items-center h-fit w-full'>
+                <label>Choose One:</label>
                 <div className='icon-container'>
                   <button className='icon p1-btn' id="p1X" type="button" onClick={(e) => handlePlayerInfoChange(setP1, "icon", "X", "p1X")}>X</button>
                   <button className='icon p1-btn' id="p1O" type="button" onClick={(e) => handlePlayerInfoChange(setP1, "icon", "O", "p1O")}>O</button>
@@ -85,8 +136,8 @@ export const TicTacToe = () => {
                 <label htmlFor='p1'>Enter P2 name</label>
                 <input value={p2.name} id="p2" onChange={(e) => handlePlayerInfoChange(setP2, "name", e.target.value, e.target.id)} required />
               </div>
-              <div className='flex flex-col justify-start items-center h-fit w-full gap-2'>
-                <span>Choose One:</span>
+              <div className='flex flex-col justify-start items-center h-fit w-full'>
+                <label>Choose One:</label>
                 <div className='icon-container'>
                   <button className='icon p2-btn' id="p2X" type="button" onClick={(e) => handlePlayerInfoChange(setP2, "icon", "X", "p2X")}>X</button>
                   <button className='icon p2-btn' id="p2O" type="button" onClick={(e) => handlePlayerInfoChange(setP2, "icon", "O", "p2O")}>O</button>
@@ -105,14 +156,16 @@ export const TicTacToe = () => {
       <div className="main">
         <div className="heading">Tic-<span className='text-red'>Tac</span>-Toe</div>
         <div className='content'>
-          <div className='flex w-full justify-between items-center h-[20%]'>
+          <div className='flex w-full md:w-1/2 justify-between items-center h-[20%]'>
             <div className='player-info'>
               <span title={p1.name}>{p1.name}</span>
               <button className='icon'>{p1.icon}</button>
+              {p1.winner && <strong className='absolute -top-6 text-red'>WINNER</strong>}
             </div>
             <div className='player-info'>
               <span title={p2.name}>{p2.name}</span>
               <button className='icon'>{p2.icon}</button>
+              {p2.winner && <strong className='absolute -top-6 text-red'>WINNER</strong>}
             </div>
           </div>
           <div className='h-[55%] aspect-square'>
@@ -121,8 +174,8 @@ export const TicTacToe = () => {
                 <div key={rowId} className='flex w-full h-1/3 justify-center items-center row'>
                   {row.map((col, colId) => {
                     return (
-                      <div key={colId} className='h-full w-1/3 flex justify-center items-center p-2 number' onClick={() => showNumber(colId)}>
-                        <span className='text-5xl font-bold'>{col}</span>
+                      <div key={colId} className='h-full w-1/3 text-orange flex justify-center items-center p-2 number' onClick={() => showNumber(rowId, colId)}>
+                        <span className='text-5xl font-bold'>{visibleBoard[rowId][colId]}</span>
                       </div>
                     )
                   })}
@@ -131,8 +184,10 @@ export const TicTacToe = () => {
             })}
           </div>
           <div className='h-[10%]'>
-            <button className='bg-orange text-black font-bold p-2 rounded-lg'>{p1.name}&apos;s Turn</button>
+            <button className='bg-orange text-black font-bold p-2 rounded-lg'>{!p1.clicked ? p1.name : p2.name}&apos;s Turn</button>
           </div>
+          <button className='secondry left-4' onClick={handleBack}>Back</button>
+          <button className='secondry' onClick={handleReset}>Reset</button>
         </div>
       </div>
     )

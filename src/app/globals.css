@@ -12,13 +12,16 @@
   @apply h-[90%] w-full flex flex-col justify-start items-center gap-4
 }
 form{
-  @apply h-full w-full flex flex-col gap-4 justify-start
+  @apply h-full w-full md:w-1/2 flex flex-col gap-4 justify-start
 }
 .select-container{
   @apply flex flex-col gap-2 border border-orange rounded p-2
 }
 form input{
-  @apply rounded-md px-2 outline-none h-[35px]
+  @apply rounded-md px-2 outline-none h-[35px] font-bold
+}
+form label{
+  @apply font-bold
 }
 .icon-container{
   @apply flex justify-between items-center h-[60px] w-full gap-2
@@ -32,8 +35,11 @@ form input{
 .primary:disabled{
   @apply bg-gray
 }
+.secondry{
+  @apply absolute bottom-2 border-2 border-red rounded-md p-2 font-bold
+}
 .player-info{
- @apply  flex flex-col justify-center items-center w-[45%] border border-orange rounded-xl bg-white h-3/4 font-bold px-2
+ @apply  flex flex-col justify-evenly items-center w-[45%] border border-orange rounded-xl bg-white h-3/4 font-bold px-2 relative
 }
 .player-info span{
   text-overflow: ellipsis;
