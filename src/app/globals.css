@@ -39,7 +39,7 @@ form label{
   @apply absolute bottom-2 border-2 border-red rounded-md p-2 font-bold
 }
 .player-info{
- @apply  flex flex-col justify-evenly items-center w-[45%] border border-orange rounded-xl bg-white h-3/4 font-bold px-2 relative
+ @apply  flex flex-col justify-evenly items-center w-[45%] border border-orange rounded-xl h-3/4 font-bold px-2 relative
 }
 .player-info span{
   text-overflow: ellipsis;
