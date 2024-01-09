@@ -67,42 +67,42 @@ export const TicTacToe = () => {
   const isDisabled = (p: Player) => p.name.trim() === "" || p.icon === ""
 
   const showNumber = (row: number, col: number) => {
-    if(!p1.winner && !p2.winner){
+    if (!p1.winner && !p2.winner) {
       let updatedVisibleBoard: BoardType = [...visibleBoard]
-      if(!p1.clicked){
-        setP1(prevState => ({...prevState, clicked: true}))
-        setP2(prevState => ({...prevState, clicked: false}))
+      if (!p1.clicked) {
+        setP1(prevState => ({ ...prevState, clicked: true }))
+        setP2(prevState => ({ ...prevState, clicked: false }))
         updatedVisibleBoard[row][col] = p1.icon
       }
-      else{
-        setP1(prevState => ({...prevState, clicked: false}))
-        setP2(prevState => ({...prevState, clicked: true}))
+      else {
+        setP1(prevState => ({ ...prevState, clicked: false }))
+        setP2(prevState => ({ ...prevState, clicked: true }))
         updatedVisibleBoard[row][col] = p2.icon
       }
-  
+
       let draw = true
-  
+
       const declareWinner = (value: string | null) => {
         p1.icon === value && setP1(prevState => ({ ...prevState, winner: true }))
         p2.icon === value && setP2(prevState => ({ ...prevState, winner: true }))
         draw = false
       }
-  
-      for(let i = 0; i < 3; i++){
+
+      for (let i = 0; i < 3; i++) {
         const rowMatch = updatedVisibleBoard[i][0] === updatedVisibleBoard[i][1] && updatedVisibleBoard[i][1] === updatedVisibleBoard[i][2]
         const colMatch = updatedVisibleBoard[0][i] === updatedVisibleBoard[1][i] && updatedVisibleBoard[1][i] === updatedVisibleBoard[2][i]
         if (rowMatch || colMatch) declareWinner(updatedVisibleBoard[rowMatch ? i : 0][colMatch ? i : 0])
       }
-  
+
       const di1 = updatedVisibleBoard[0][0] === updatedVisibleBoard[1][1] && updatedVisibleBoard[1][1] === updatedVisibleBoard[2][2]
       const di2 = updatedVisibleBoard[0][2] === updatedVisibleBoard[1][1] && updatedVisibleBoard[1][1] === updatedVisibleBoard[2][0]
-  
+
       if (di1 || di2) declareWinner(updatedVisibleBoard[1][1])
-      
+
       setVisibleBoard(updatedVisibleBoard)
-  
+
       const status: boolean = updatedVisibleBoard.flat().every(status => status)
-      if(status && draw){
+      if (status && draw) {
         setTimeout(() => handleReset(), 2000)
       }
     }
@@ -110,13 +110,13 @@ export const TicTacToe = () => {
 
   const handleBack = () => {
     setShow("playerName")
-    setP1({name: "", icon: "", clicked: false, winner: false})
-    setP2({name: "", icon: "", clicked: false, winner: false})
+    setP1({ name: "", icon: "", clicked: false, winner: false })
+    setP2({ name: "", icon: "", clicked: false, winner: false })
   }
 
   const handleReset = () => {
-    setP1(prevState => ({...prevState, clicked: false, winner: false}))
-    setP2(prevState => ({...prevState, clicked: false, winner: false}))
+    setP1(prevState => ({ ...prevState, clicked: false, winner: false }))
+    setP2(prevState => ({ ...prevState, clicked: false, winner: false }))
     setBoard(initialBoard(3, 3, null))
     setVisibleBoard(initialBoard(3, 3, ""))
   }
@@ -165,17 +165,17 @@ export const TicTacToe = () => {
       <div className="main">
         <div className="heading">Tic-<span className='text-red'>Tac</span>-Toe</div>
         <div className='content'>
-        {p1.winner && <Lottie animationData={celebration} className='absolute h-3/4 z-10'/>}
+          {(p1.winner || p2.winner) && <Lottie animationData={celebration} className='absolute h-3/4 z-10' />}
           <div className='flex w-full md:w-1/2 justify-between items-center h-[20%]'>
             <div className='player-info'>
               <span title={p1.name}>{p1.name}</span>
               <button className='icon'>{p1.icon}</button>
-              {p1.winner && <Lottie animationData={winner} className='absolute -top-[75%] -right-[50%] w-full h-[150%]'/>}
+              {p1.winner && <Lottie animationData={winner} className='absolute -top-[75%] -right-[50%] w-full h-[150%]' />}
             </div>
             <div className='player-info'>
               <span title={p2.name}>{p2.name}</span>
               <button className='icon'>{p2.icon}</button>
-              {p2.winner && <Lottie animationData={winner} className='absolute -top-[75%] -left-[50%] w-full h-[150%]'/>}
+              {p2.winner && <Lottie animationData={winner} className='absolute -top-[75%] -left-[50%] w-full h-[150%]' />}
             </div>
           </div>
           <div className='h-[55%] aspect-square'>
@@ -185,7 +185,26 @@ export const TicTacToe = () => {
                   {row.map((col, colId) => {
                     return (
                       <div key={colId} className='h-full w-1/3 text-orange flex justify-center items-center p-2 number' onClick={() => showNumber(rowId, colId)}>
-                        <span className='text-5xl font-bold'>{visibleBoard[rowId][colId]}</span>
+                        {visibleBoard[rowId][colId] === "X" &&
+                          <div className="w-full h-full">
+                            <svg width="100%" height="100%" viewBox="0 0 100 100">
+                              <line className="letter-x animate-draw" x1="10" y1="10" x2="90" y2="90" />
+                              <line className="letter-x animate-draw" x1="10" y1="90" x2="90" y2="10" />
+                            </svg>
+                          </div>
+                        }
+                        {visibleBoard[rowId][colId] === "O" &&
+                          <div className="w-full h-full">
+                            <svg width="100%" height="100%" viewBox="0 0 100 100">
+                              <circle
+                                className="letter-o animate-draw"
+                                cx="50"
+                                cy="50"
+                                r="40"
+                              />
+                            </svg>
+                          </div>
+                        }
                       </div>
                     )
                   })}
@@ -199,7 +218,7 @@ export const TicTacToe = () => {
           <button className='secondry left-4' onClick={handleBack}>Back</button>
           <button className='secondry' onClick={handleReset}>Reset</button>
         </div>
-      </div>
+      </div >
     )
   }
 }

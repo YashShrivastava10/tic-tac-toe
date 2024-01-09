@@ -53,6 +53,28 @@ form label{
 .number:not(:last-child){
   border-right: 5px dashed rgba(0, 0, 255, 0.489);
 }
-.winning-cell {
-  background-color: yellow;
+
+@keyframes drawX {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.drawing-animation {
+  width: 100%;
+  aspect-ratio: 1/1;
+}
+
+.letter-x {
+  stroke: #f8b630;
+  stroke-width: 6;
+  stroke-dasharray: 140;
+  stroke-dashoffset: 140;
+}
+.letter-o {
+  fill: none;
+  stroke: #f8b630;
+  stroke-width: 6;
+  stroke-dasharray: 251.2;
+  stroke-dashoffset: 251.2;
 }

@@ -12,6 +12,16 @@ const config: Config = {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
+      animation: {
+        draw: 'draw 1s ease forwards'
+      },
+      keyframes: {
+        draw: {
+          to: {
+            "stroke-dashoffset": "0"
+          }
+        }
+      },
     },
     colors: {
       yellow: "#f9d459",
