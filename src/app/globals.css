@@ -42,10 +42,7 @@ form label{
  @apply  flex flex-col justify-evenly items-center w-[45%] border border-orange rounded-xl h-3/4 font-bold px-2 relative
 }
 .player-info span{
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  max-width: 100%;
+  @apply text-ellipsis overflow-hidden whitespace-nowrap max-w-full
 }
 .row:not(:last-child){
   border-bottom: 5px dashed rgba(0, 0, 255, 0.489);
@@ -61,8 +58,7 @@ form label{
 }
 
 .drawing-animation {
-  width: 100%;
-  aspect-ratio: 1/1;
+  @apply w-full aspect-square
 }
 
 .letter-x {
@@ -78,3 +74,4 @@ form label{
   stroke-dasharray: 251.2;
   stroke-dashoffset: 251.2;
 }
+

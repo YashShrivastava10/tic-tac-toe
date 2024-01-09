@@ -21,6 +21,7 @@ export const TicTacToe = () => {
   const [p1, setP1] = useState<Player>({ name: "", icon: "", clicked: false, winner: false })
   const [p2, setP2] = useState<Player>({ name: "", icon: "", clicked: false, winner: false })
   const [board, setBoard] = useState<BoardType>([])
+  const [coordinates, setCoordinates] = useState<[number, number][] | null>(null)
 
   const selectBtn = (p: HTMLButtonElement) => {
     p.style.border = "2px solid #f22853"
@@ -90,13 +91,29 @@ export const TicTacToe = () => {
       const rowMatch = board[i][0] === board[i][1] && board[i][1] === board[i][2];
       const colMatch = board[0][i] === board[1][i] && board[1][i] === board[2][i];
       const value = board[rowMatch ? i : 0][colMatch ? i : 0]
-      if ((rowMatch || colMatch) && (value === "X" || value === "O")) return declareWinner(value)
+      const isIcon = value === "X" || value === "O" 
+      if(isIcon && rowMatch){
+        setCoordinates([[i, 0], [i, 1], [i, 2]])
+        return declareWinner(value)
+      }
+      else if(isIcon && colMatch){
+        setCoordinates([[0, i], [1, i], [2, i]])
+        return declareWinner(value)
+      }
     }
   
     // Check for a winner in diagonals
     const di1 = board[0][0] === board[1][1] && board[1][1] === board[2][2];
     const di2 = board[0][2] === board[1][1] && board[1][1] === board[2][0];
-    if (di1 || di2) return declareWinner(board[1][1])
+    const value = board[1][1]
+    if(value && di1){
+      setCoordinates([[0, 0], [1, 1], [2, 2]])
+      return declareWinner(value)
+    }
+    else if(value && di2){
+      setCoordinates([[0, 2], [1, 1], [2, 0]])
+      return declareWinner(value)
+    }
 
     return false
   };
@@ -125,12 +142,14 @@ export const TicTacToe = () => {
     setShow("playerName")
     setP1({ name: "", icon: "", clicked: false, winner: false })
     setP2({ name: "", icon: "", clicked: false, winner: false })
+    setCoordinates(null)
   }
 
   const handleReset = () => {
     setP1(prevState => ({ ...prevState, clicked: false, winner: false }))
     setP2(prevState => ({ ...prevState, clicked: false, winner: false }))
     setBoard(initialBoard(3, 3, ""))
+    setCoordinates(null)
   }
 
   if (show === "playerName") {
@@ -163,7 +182,7 @@ export const TicTacToe = () => {
             <PlayerInfo p={p2} />
           </div>
 
-          <Board board={board} showIcon={showIcon} />
+          <Board board={board} showIcon={showIcon} coordinates={coordinates}/>
 
           <div className='h-[10%]'>
             <button className='bg-orange text-black font-bold p-2 rounded-lg'>{!p1.clicked ? p1.name : p2.name}&apos;s Turn</button>

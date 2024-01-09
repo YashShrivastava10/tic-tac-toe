@@ -1,9 +1,9 @@
 import React from 'react'
 
-export const Draw = ( { icon }: { icon: string | null }) => {
+export const Draw = ( { icon, isWinningCell }: { icon: string | null, isWinningCell: boolean | null }) => {
   return (
     <div className="w-full h-full">
-      <svg width="100%" height="100%" viewBox="0 0 100 100">
+      <svg width="100%" height="100%" viewBox="0 0 100 100" className={`${isWinningCell && 'animate-win'}`}>
         {icon === "X" && 
           <>
             <line className="letter-x animate-draw" x1="10" y1="10" x2="90" y2="90" />

@@ -13,14 +13,27 @@ const config: Config = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       animation: {
-        draw: 'draw 1s ease forwards'
+        draw: 'draw 1s ease forwards',
+        win: 'win 1s ease-in alternate infinite'
       },
       keyframes: {
         draw: {
           to: {
             "stroke-dashoffset": "0"
           }
-        }
+        },
+        win: {
+          "0%, 100%": {
+            transform: "translateY(-20%)",
+            "animation-timing-function": "cubic-bezier(0.8, 0, 1, 1)",
+            opacity: "1",
+          },
+          "50%": {
+            transform: "translateY(0)",
+            "animation-timing-function": "cubic-bezier(0, 0, 0.2, 1)",
+            opacity: "0.5",
+          },
+        },
       },
     },
     colors: {
