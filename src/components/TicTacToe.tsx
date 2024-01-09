@@ -1,6 +1,9 @@
 "use client"
 
+import Lottie from 'lottie-react'
 import React, { useState } from 'react'
+import celebration from "./celebration.json"
+import winner from "./winner.json"
 
 type BoardType = Array<Array<string | null>>
 type Icon = "X" | "O" | ""
@@ -14,7 +17,6 @@ export const TicTacToe = () => {
   const [p2, setP2] = useState<Player>({ name: "", icon: "", clicked: false, winner: false })
   const [board, setBoard] = useState<BoardType>([])
   const [visibleBoard, setVisibleBoard] = useState<BoardType>([])
-  const [winningLine, setWinningLine] = useState<{ start: [number, number]; end: [number, number] } | null>(null);
 
 
   const selectBtn = (p: HTMLButtonElement) => {
@@ -65,42 +67,44 @@ export const TicTacToe = () => {
   const isDisabled = (p: Player) => p.name.trim() === "" || p.icon === ""
 
   const showNumber = (row: number, col: number) => {
-    let updatedVisibleBoard: BoardType = [...visibleBoard]
-    if(!p1.clicked){
-      setP1(prevState => ({...prevState, clicked: true}))
-      setP2(prevState => ({...prevState, clicked: false}))
-      updatedVisibleBoard[row][col] = p1.icon
-    }
-    else{
-      setP1(prevState => ({...prevState, clicked: false}))
-      setP2(prevState => ({...prevState, clicked: true}))
-      updatedVisibleBoard[row][col] = p2.icon
-    }
-
-    let draw = true
-
-    const declareWinner = (value: string | null) => {
-      p1.icon === value && setP1(prevState => ({ ...prevState, winner: true }))
-      p2.icon === value && setP2(prevState => ({ ...prevState, winner: true }))
-      draw = false
-    }
-
-    for(let i = 0; i < 3; i++){
-      const rowMatch = updatedVisibleBoard[i][0] === updatedVisibleBoard[i][1] && updatedVisibleBoard[i][1] === updatedVisibleBoard[i][2]
-      const colMatch = updatedVisibleBoard[0][i] === updatedVisibleBoard[1][i] && updatedVisibleBoard[1][i] === updatedVisibleBoard[2][i]
-      if (rowMatch || colMatch) declareWinner(updatedVisibleBoard[rowMatch ? i : 0][colMatch ? i : 0])
-    }
-
-    const di1 = updatedVisibleBoard[0][0] === updatedVisibleBoard[1][1] && updatedVisibleBoard[1][1] === updatedVisibleBoard[2][2]
-    const di2 = updatedVisibleBoard[0][2] === updatedVisibleBoard[1][1] && updatedVisibleBoard[1][1] === updatedVisibleBoard[2][0]
-
-    if (di1 || di2) declareWinner(updatedVisibleBoard[1][1])
-    
-    setVisibleBoard(updatedVisibleBoard)
-
-    const status: boolean = updatedVisibleBoard.flat().every(status => status)
-    if(status && draw){
-      setTimeout(() => handleReset(), 2000)
+    if(!p1.winner && !p2.winner){
+      let updatedVisibleBoard: BoardType = [...visibleBoard]
+      if(!p1.clicked){
+        setP1(prevState => ({...prevState, clicked: true}))
+        setP2(prevState => ({...prevState, clicked: false}))
+        updatedVisibleBoard[row][col] = p1.icon
+      }
+      else{
+        setP1(prevState => ({...prevState, clicked: false}))
+        setP2(prevState => ({...prevState, clicked: true}))
+        updatedVisibleBoard[row][col] = p2.icon
+      }
+  
+      let draw = true
+  
+      const declareWinner = (value: string | null) => {
+        p1.icon === value && setP1(prevState => ({ ...prevState, winner: true }))
+        p2.icon === value && setP2(prevState => ({ ...prevState, winner: true }))
+        draw = false
+      }
+  
+      for(let i = 0; i < 3; i++){
+        const rowMatch = updatedVisibleBoard[i][0] === updatedVisibleBoard[i][1] && updatedVisibleBoard[i][1] === updatedVisibleBoard[i][2]
+        const colMatch = updatedVisibleBoard[0][i] === updatedVisibleBoard[1][i] && updatedVisibleBoard[1][i] === updatedVisibleBoard[2][i]
+        if (rowMatch || colMatch) declareWinner(updatedVisibleBoard[rowMatch ? i : 0][colMatch ? i : 0])
+      }
+  
+      const di1 = updatedVisibleBoard[0][0] === updatedVisibleBoard[1][1] && updatedVisibleBoard[1][1] === updatedVisibleBoard[2][2]
+      const di2 = updatedVisibleBoard[0][2] === updatedVisibleBoard[1][1] && updatedVisibleBoard[1][1] === updatedVisibleBoard[2][0]
+  
+      if (di1 || di2) declareWinner(updatedVisibleBoard[1][1])
+      
+      setVisibleBoard(updatedVisibleBoard)
+  
+      const status: boolean = updatedVisibleBoard.flat().every(status => status)
+      if(status && draw){
+        setTimeout(() => handleReset(), 2000)
+      }
     }
   }
 
@@ -161,16 +165,17 @@ export const TicTacToe = () => {
       <div className="main">
         <div className="heading">Tic-<span className='text-red'>Tac</span>-Toe</div>
         <div className='content'>
+        {p1.winner && <Lottie animationData={celebration} className='absolute h-3/4 z-10'/>}
           <div className='flex w-full md:w-1/2 justify-between items-center h-[20%]'>
             <div className='player-info'>
               <span title={p1.name}>{p1.name}</span>
               <button className='icon'>{p1.icon}</button>
-              {p1.winner && <strong className='absolute -top-6 text-red'>WINNER</strong>}
+              {p1.winner && <Lottie animationData={winner} className='absolute -top-[75%] -right-[50%] w-full h-[150%]'/>}
             </div>
             <div className='player-info'>
               <span title={p2.name}>{p2.name}</span>
               <button className='icon'>{p2.icon}</button>
-              {p2.winner && <strong className='absolute -top-6 text-red'>WINNER</strong>}
+              {p2.winner && <Lottie animationData={winner} className='absolute -top-[75%] -left-[50%] w-full h-[150%]'/>}
             </div>
           </div>
           <div className='h-[55%] aspect-square'>
